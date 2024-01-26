@@ -695,6 +695,10 @@ void upgrade_colonial_state(sys::state& state, dcon::nation_id source, dcon::sta
 	}
 }
 
+void update_province_name(dcon::province_id id, dcon::nation_id new_owner) {
+	return;
+}
+
 void change_province_owner(sys::state& state, dcon::province_id id, dcon::nation_id new_owner) {
 	auto state_def = state.world.province_get_state_from_abstract_state_membership(id);
 	auto old_si = state.world.province_get_state_membership(id);
@@ -735,6 +739,7 @@ void change_province_owner(sys::state& state, dcon::province_id id, dcon::nation
 				break;
 			}
 		}
+		update_province_name(id, new_owner);
 		bool was_slave_state = !old_owner || state.world.province_get_is_slave(id);
 		if(!new_si) {
 			new_si = state.world.create_state_instance();
