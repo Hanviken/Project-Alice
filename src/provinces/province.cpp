@@ -696,6 +696,7 @@ void upgrade_colonial_state(sys::state& state, dcon::nation_id source, dcon::sta
 }
 
 void update_province_name(dcon::province_id id, dcon::nation_id new_owner) {
+	auto pc = state.world.nation_get_primary_culture(new_owner);
 	return;
 }
 
