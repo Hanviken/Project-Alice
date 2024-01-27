@@ -3054,6 +3054,18 @@ void state::load_scenario_data(parsers::error_handler& err) {
 			parsers::read_pending_rebel_type(r.second.id, r.second.generator_state, err, context);
 		}
 	}
+	// province names
+	{
+		auto province_names = open_file(common, NATIVE("province_names.csv"));
+		if(province_names) {
+			auto content = view_contents(*province_names);
+			err.file_name = "province_names.csv";
+			parsers::read_province_names(content.data, content.data + content.file_size, err, context);
+		} else {
+			err.fatal = true;
+			err.accumulated_errors += "File common/province_names.csv could not be opened\n";
+		}
+	}
 	// load decisions
 	{
 		auto decisions = open_directory(root, NATIVE("decisions"));
