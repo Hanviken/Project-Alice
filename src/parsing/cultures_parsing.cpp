@@ -586,4 +586,27 @@ void read_pending_rebel_type(dcon::rebel_type_id id, token_generator& gen, error
 	parse_rebel_body(gen, err, new_context);
 }
 
+void read_province_names(char const* start, char const* end, error_handler& err, scenario_building_context& context) {
+	char const* cpos = parsers::csv_advance_to_next_line(start, end); 
+	while(cpos < end) {
+		// 123;swedish;Helsingfors
+		cpos = parsers::parse_fixed_amount_csv_values<3>(cpos, end, ';', [&](std::string_view const* values) {
+			auto first_text = parsers::remove_surrounding_whitespace(values[0]);
+			if(first_text.length() > 0) {
+				auto first_value = parsers::parse_int(first_text, 0, err);
+				if(first_value == 0) {
+					// dead line
+				} else if(size_t(first_value) >= context.original_id_to_prov_id_map.size()) {
+					err.accumulated_errors += "Province id " + std::to_string(first_value) + " is too large (" + err.file_name + ")\n";
+				} else {
+					auto province_id = context.original_id_to_prov_id_map[first_value];
+					auto culture = parsers::remove_surrounding_whitespace(values[1]);
+					auto culture_name = parsers::remove_surrounding_whitespace(values[2]);
+					store_province_names(); //fix
+				}
+			}
+		});
+	}
+}
+
 } // namespace parsers
