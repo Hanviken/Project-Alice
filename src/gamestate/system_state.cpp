@@ -193,7 +193,7 @@ void state::on_lbutton_down(int32_t x, int32_t y, key_modifiers mod) {
 					local_player_nation = owner;
 					world.nation_set_is_player_controlled(local_player_nation, true);
 					ui_state.nation_picker->impl_on_update(*this);
-				} else {
+				} else if(command::can_notify_player_picks_nation(*this, local_player_nation, owner)) {
 					command::notify_player_picks_nation(*this, local_player_nation, owner);
 				}
 			}
@@ -2127,6 +2127,7 @@ void state::save_user_settings() const {
 	US_SAVE(render_models);
 	US_SAVE(mouse_edge_scrolling);
 	US_SAVE(black_map_font);
+	US_SAVE(spoilers);
 #undef US_SAVE
 
 	simple_fs::write_file(settings_location, NATIVE("user_settings.dat"), &buffer[0], uint32_t(ptr - buffer));
@@ -2186,6 +2187,7 @@ void state::load_user_settings() {
 			US_LOAD(render_models);
 			US_LOAD(mouse_edge_scrolling);
 			US_LOAD(black_map_font);
+			US_LOAD(spoilers);
 #undef US_LOAD
 		} while(false);
 
@@ -2868,6 +2870,15 @@ void state::load_scenario_data(parsers::error_handler& err) {
 		auto start_dir_name =
 			std::to_string(startdate.year) + "." + std::to_string(startdate.month) + "." + std::to_string(startdate.day);
 		auto date_directory = open_directory(pop_history, simple_fs::utf8_to_native(start_dir_name));
+
+
+		// NICK: 
+		// Attempts to look through the start date as defined by the mod.
+		// If it does not find any pop files there, it defaults to looking through 1836.1.1
+		// This is to deal with mods that have their start date defined as something else, but have pop history within 1836.1.1 (converters).
+		auto directory_file_count = list_files(date_directory, NATIVE(".txt")).size();
+		if(directory_file_count == 0)
+			date_directory = open_directory(pop_history, simple_fs::utf8_to_native("1836.1.1"));
 
 		for(auto pop_file : list_files(date_directory, NATIVE(".txt"))) {
 			auto opened_file = open_file(pop_file);

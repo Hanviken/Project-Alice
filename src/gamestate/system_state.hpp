@@ -374,6 +374,7 @@ struct user_settings_s {
 	bool render_models = false;
 	bool mouse_edge_scrolling = false;
 	bool black_map_font = true;
+	bool spoilers = true;
 };
 
 struct global_scenario_data_s { // this struct holds miscellaneous global properties of the scenario
@@ -386,6 +387,7 @@ struct cheat_data_s {
 	bool show_province_id_tooltip = false;
 	bool wasd_move_cam = false;
 	bool instant_army = false;
+	bool instant_industry = false;
 	std::vector<dcon::nation_id> instant_research_nations;
 };
 
