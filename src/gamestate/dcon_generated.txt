@@ -1497,6 +1497,10 @@ object {
 		name{ former_rebel_controller }
 		type{ dcon::rebel_faction_id }
 	}
+	property{
+		name{ province_names }
+		type{ array{culture_id}{text_sequence_id} }
+	}
 }
 
 relationship{
