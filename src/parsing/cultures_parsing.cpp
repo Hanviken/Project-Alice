@@ -601,8 +601,10 @@ void read_province_names(char const* start, char const* end, error_handler& err,
 				} else {
 					auto province_id = context.original_id_to_prov_id_map[first_value];
 					auto culture = parsers::remove_surrounding_whitespace(values[1]);
-					auto culture_name = parsers::remove_surrounding_whitespace(values[2]);
-					store_province_names(); //fix
+					auto province_name = parsers::remove_surrounding_whitespace(values[2]);
+					auto entry = create_text_entry(context.state,culture,province_name,err)
+					//wip
+					//create_text_entry(sys::state& state, std::string_view key, std::string_view content, parsers::error_handler& err)
 				}
 			}
 		});
